@@ -4,6 +4,13 @@ echo   Antigravity Quick Sync to GitHub
 echo ==================================================
 cd /d "%~dp0"
 
+where git >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    for /f "delims=" %%i in ('powershell -NoProfile -Command "(Get-ChildItem -Path \"$env:LOCALAPPDATA\GitHubDesktop\app-*\" | Sort-Object Name -Descending | Select-Object -First 1).FullName + '\resources\app\git\cmd'"') do (
+        set "PATH=%%i;%PATH%"
+    )
+)
+
 echo Staging all changes...
 git add -A
 

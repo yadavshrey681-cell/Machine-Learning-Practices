@@ -8,6 +8,17 @@ param(
 $repoPath = (Resolve-Path "$PSScriptRoot\..").Path
 Set-Location -Path $repoPath
 
+# Ensure git is available in PATH
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    $latestApp = Get-ChildItem -Path "$env:LOCALAPPDATA\GitHubDesktop\app-*" -ErrorAction SilentlyContinue | Sort-Object Name -Descending | Select-Object -First 1
+    if ($latestApp) {
+        $gitCmd = Join-Path $latestApp.FullName "resources\app\git\cmd"
+        if (Test-Path "$gitCmd\git.exe") {
+            $env:PATH = "$gitCmd;" + $env:PATH
+        }
+    }
+}
+
 Write-Host "==================================================" -ForegroundColor Cyan
 Write-Host " Antigravity Auto-Sync to GitHub Started          " -ForegroundColor Green
 Write-Host " Repository : $repoPath" -ForegroundColor Gray
